@@ -27,7 +27,13 @@ function decode (buffer) {
   const hashTypeMod = hashType & ~0x80
   if (hashTypeMod <= 0 || hashTypeMod >= 4) throw new Error('Invalid hashType ' + hashType)
 
-  const decode = bip66.decode(buffer.slice(0, -1))
+  let decode;
+  try {
+    decode = bip66.decode(buffer.slice(0, -1))
+  } catch (e) {
+    decode = bip66.decode(buffer.slice(0, -2))
+  }
+
   const r = fromDER(decode.r)
   const s = fromDER(decode.s)
 
